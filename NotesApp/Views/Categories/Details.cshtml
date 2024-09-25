@@ -1,0 +1,15 @@
+﻿@model NotesApp.Models.Category
+
+@{
+    ViewData["Title"] = "Category Details";
+}
+
+<h2>Category Details</h2>
+
+<div class="mb-3">
+    <h4>Name:</h4>
+    <p>@Model.Name</p>
+</div>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+<a asp-action="Index" class="btn btn-primary">Back to List</a>

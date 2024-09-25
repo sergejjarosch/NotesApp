@@ -1,0 +1,35 @@
+﻿@model IEnumerable<NotesApp.Models.Note>
+
+@{
+    ViewData["Title"] = "All Notes";
+}
+
+<h2>All Notes</h2>
+
+<a asp-action="Create" class="btn btn-primary">Create New Note</a>
+
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Date</th>
+            <th>Category</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var note in Model)
+        {
+            <tr>
+                <td>@note.Title</td>
+                <td>@note.Date.ToShortDateString()</td>
+                <td>@note.Category?.Name</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@note.Id" class="btn btn-info btn-sm">Details</a>
+                    <a asp-action="Edit" asp-route-id="@note.Id" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@note.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,29 @@
+﻿@model NotesApp.ViewModels.NoteViewModel
+
+@{
+    ViewData["Title"] = "Create Note";
+}
+
+<h2>Create Note</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="Note.Title" class="form-label"></label>
+        <input asp-for="Note.Title" class="form-control" />
+        <span asp-validation-for="Note.Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Note.Content" class="form-label"></label>
+        <textarea asp-for="Note.Content" class="form-control"></textarea>
+        <span asp-validation-for="Note.Content" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Note.CategoryId" class="form-label">Category</label>
+        <select asp-for="Note.CategoryId" class="form-control" asp-items="Model.Categories"></select>
+        <span asp-validation-for="Note.CategoryId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
