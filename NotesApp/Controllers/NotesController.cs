@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NotesApp.Data;
 using NotesApp.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NotesApp.ViewModels;
+using System.Threading.Tasks;
 
 namespace NotesApp.Controllers
 {
@@ -16,21 +17,19 @@ namespace NotesApp.Controllers
             _context = context;
         }
 
-        // Anzeigen aller Notizen
+        // Index: Zeigt alle Notizen an
         public async Task<IActionResult> Index(int? categoryId)
         {
             var notesQuery = _context.Notes.Include(n => n.Category).AsQueryable();
-
             if (categoryId.HasValue)
             {
                 notesQuery = notesQuery.Where(n => n.CategoryId == categoryId.Value);
             }
-
             var notes = await notesQuery.OrderByDescending(n => n.Date).ToListAsync();
             return View(notes);
         }
 
-        // GET: Notes/Details/{id}
+        // Details: Details einer Notiz anzeigen
         public async Task<IActionResult> Details(int id)
         {
             var note = await _context.Notes.Include(n => n.Category)
@@ -42,7 +41,7 @@ namespace NotesApp.Controllers
             return View(note);
         }
 
-        // GET: Notes/Create
+        // Create: Neue Notiz erstellen (GET)
         public async Task<IActionResult> Create()
         {
             var categories = await _context.Categories.ToListAsync();
@@ -51,11 +50,10 @@ namespace NotesApp.Controllers
                 Note = new Note(),
                 Categories = new SelectList(categories, "Id", "Name")
             };
-
             return View(viewModel);
         }
 
-        // POST: Notes/Create
+        // Create: Neue Notiz speichern (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(NoteViewModel viewModel)
@@ -66,13 +64,11 @@ namespace NotesApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-
-            // Falls ein Fehler auftritt, Kategorien erneut in ViewModel laden
             viewModel.Categories = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
             return View(viewModel);
         }
 
-        // GET: Notes/Edit/{id}
+        // Edit: Bearbeiten einer Notiz (GET)
         public async Task<IActionResult> Edit(int id)
         {
             var note = await _context.Notes.FindAsync(id);
@@ -80,18 +76,16 @@ namespace NotesApp.Controllers
             {
                 return NotFound();
             }
-
             var categories = await _context.Categories.ToListAsync();
             var viewModel = new NoteViewModel
             {
                 Note = note,
                 Categories = new SelectList(categories, "Id", "Name", note.CategoryId)
             };
-
             return View(viewModel);
         }
 
-        // POST: Notes/Edit/{id}
+        // Edit: Änderungen speichern (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, NoteViewModel viewModel)
@@ -121,13 +115,11 @@ namespace NotesApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-
-            // Falls ein Fehler auftritt, Kategorien erneut in ViewModel laden
-            viewModel.Categories = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name", viewModel.Note.CategoryId);
+            viewModel.Categories = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
             return View(viewModel);
         }
 
-        // GET: Notes/Delete/{id}
+        // Delete: Notiz löschen (GET)
         public async Task<IActionResult> Delete(int id)
         {
             var note = await _context.Notes.Include(n => n.Category)
@@ -136,11 +128,10 @@ namespace NotesApp.Controllers
             {
                 return NotFound();
             }
-
             return View(note);
         }
 
-        // POST: Notes/Delete/{id}
+        // Delete: Notiz löschen (POST)
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -151,7 +142,6 @@ namespace NotesApp.Controllers
                 _context.Notes.Remove(note);
                 await _context.SaveChangesAsync();
             }
-
             return RedirectToAction(nameof(Index));
         }
 

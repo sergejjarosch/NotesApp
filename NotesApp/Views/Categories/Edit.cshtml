@@ -7,7 +7,8 @@
 <h2>Edit Category</h2>
 
 <form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Id" /> <!-- Make sure this hidden field is present -->
+
     <div class="mb-3">
         <label asp-for="Name" class="form-label"></label>
         <input asp-for="Name" class="form-control" />
@@ -16,3 +17,6 @@
 
     <button type="submit" class="btn btn-primary">Save</button>
 </form>
+
+
+

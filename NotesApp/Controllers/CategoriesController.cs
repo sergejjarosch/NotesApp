@@ -15,47 +15,43 @@ namespace NotesApp.Controllers
             _context = context;
         }
 
-        // Anzeigen aller Kategorien
-        public async Task<IActionResult> Index()
+        
+
+        // Index: Zeigt alle Kategorien an
+        public  IActionResult Index()
         {
-            var categories = await _context.Categories.ToListAsync();
+            var categories =  _context.Categories.ToList();
             return View(categories);
         }
 
-        // GET: Categories/Details/{id}
-        public async Task<IActionResult> Details(int id)
-        {
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
 
-            return View(category);
-        }
-
-        // GET: Categories/Create
+        // Create: Neue Kategorie erstellen (GET)
         public IActionResult Create()
         {
-            return View();
+            return View(nameof(Create));
         }
 
-        // POST: Categories/Create
+        // Create: Neue Kategorie speichern (POST)
         [HttpPost]
-
-        public async Task<IActionResult> Create([Bind("Name")] Category category)
+        public  IActionResult Create(Category category)
         {
             if (ModelState.IsValid)
             {
+                var maxId = _context.Categories.Max(x => x.Id);
+                category.Id = maxId + 1;
                 _context.Add(category);
-                await _context.SaveChangesAsync();
+                _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-
             return View(category);
         }
 
-        // GET: Categories/Edit/{id}
+
+
+
+
+
+        // Edit: Bearbeiten einer Kategorie (GET)
         public async Task<IActionResult> Edit(int id)
         {
             var category = await _context.Categories.FindAsync(id);
@@ -63,11 +59,10 @@ namespace NotesApp.Controllers
             {
                 return NotFound();
             }
-
             return View(category);
         }
 
-        // POST: Categories/Edit/{id}
+        // Edit: Änderungen speichern (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id, Name")] Category category)
@@ -97,11 +92,10 @@ namespace NotesApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-
             return View(category);
         }
 
-        // GET: Categories/Delete/{id}
+        // Delete: Kategorie löschen (GET)
         public async Task<IActionResult> Delete(int id)
         {
             var category = await _context.Categories.FindAsync(id);
@@ -109,11 +103,10 @@ namespace NotesApp.Controllers
             {
                 return NotFound();
             }
-
             return View(category);
         }
 
-        // POST: Categories/Delete/{id}
+        // Delete: Kategorie löschen (POST)
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -124,10 +117,10 @@ namespace NotesApp.Controllers
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
             }
-
             return RedirectToAction(nameof(Index));
         }
 
+        // Prüfen, ob eine Kategorie existiert
         private bool CategoryExists(int id)
         {
             return _context.Categories.Any(e => e.Id == id);

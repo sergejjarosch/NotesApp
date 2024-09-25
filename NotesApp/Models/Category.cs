@@ -7,7 +7,7 @@ namespace NotesApp.Models
     {
         public int Id { get; set; }
 
-        //[Required]
+        [Required]
         [StringLength(50)]
         public string Name { get; set; }
 
