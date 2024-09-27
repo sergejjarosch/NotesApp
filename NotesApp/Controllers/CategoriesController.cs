@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NotesApp.Data;
 using NotesApp.Models;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NotesApp.Controllers
@@ -15,12 +16,10 @@ namespace NotesApp.Controllers
             _context = context;
         }
 
-        
-
         // Index: Zeigt alle Kategorien an
-        public  IActionResult Index()
+        public IActionResult Index()
         {
-            var categories =  _context.Categories.ToList();
+            var categories = _context.Categories.ToList();
             return View(categories);
         }
 
@@ -31,65 +30,50 @@ namespace NotesApp.Controllers
             return View(nameof(Create));
         }
 
+
         // Create: Neue Kategorie speichern (POST)
         [HttpPost]
-        public  IActionResult Create(Category category)
+        public IActionResult Create(Category category)
         {
-            if (ModelState.IsValid)
+            var maxId = _context.Categories.Max(x => x.Id);
+            category.Id = maxId + 1;
+            _context.Add(category);
+            _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GetCategory By ID 
+
+        public Category? GetCategoryById(int id)
+        {
+            var categoryToUpdate = _context.Categories.FirstOrDefault(x => x.Id == id);
+            if (categoryToUpdate != null)
             {
-                var maxId = _context.Categories.Max(x => x.Id);
-                category.Id = maxId + 1;
-                _context.Add(category);
-                _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return new Category
+                {
+                    Id = categoryToUpdate.Id,
+                    Name = categoryToUpdate.Name,
+                };
             }
-            return View(category);
+            return null;
         }
 
 
-
-
-
-
         // Edit: Bearbeiten einer Kategorie (GET)
-        public async Task<IActionResult> Edit(int id)
+        public IActionResult Edit(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
+            var category = GetCategoryById(id);
             return View(category);
         }
 
         // Edit: Änderungen speichern (POST)
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id, Name")] Category category)
+        public IActionResult Edit(Category category)
         {
-            if (id != category.Id)
+            if (category.Name != null)
             {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CategoryExists(category.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(category);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -99,31 +83,12 @@ namespace NotesApp.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var category = await _context.Categories.FindAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-            return View(category);
-        }
-
-        // Delete: Kategorie löschen (POST)
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var category = await _context.Categories.FindAsync(id);
             if (category != null)
             {
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));
-        }
-
-        // Prüfen, ob eine Kategorie existiert
-        private bool CategoryExists(int id)
-        {
-            return _context.Categories.Any(e => e.Id == id);
         }
     }
 }

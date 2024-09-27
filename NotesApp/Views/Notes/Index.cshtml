@@ -4,6 +4,14 @@
     ViewData["Title"] = "All Notes";
 }
 
+@functions {
+    // Funktion zum Entfernen von HTML-Tags
+    public static string StripHtmlTags(string input)
+    {
+        return System.Text.RegularExpressions.Regex.Replace(input, "<.*?>", string.Empty);
+    }
+}
+
 <h2>All Notes</h2>
 
 <a asp-action="Create" class="btn btn-primary">Create New Note</a>
@@ -14,7 +22,8 @@
             <th>Title</th>
             <th>Date</th>
             <th>Category</th>
-            <th>Actions</th>
+            <th>Preview</th>
+            <th class="text-end" >Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -25,11 +34,32 @@
                 <td>@note.Date.ToShortDateString()</td>
                 <td>@note.Category?.Name</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@note.Id" class="btn btn-info btn-sm">Details</a>
+                    @if (!string.IsNullOrEmpty(note.Content))
+                    {
+                        var plainTextContent = StripHtmlTags(note.Content);
+                        if (plainTextContent.Length > 50)
+                        {
+                            @plainTextContent.Substring(0, 50)
+                            <text>...</text>
+                        }
+                        else
+                        {
+                            @plainTextContent
+                        }
+                    }
+                </td>
+                <td class="text-end">
                     <a asp-action="Edit" asp-route-id="@note.Id" class="btn btn-warning btn-sm">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@note.Id" class="btn btn-danger btn-sm">Delete</a>
+                    <a asp-action="Delete" asp-route-id="@note.Id" class="btn btn-danger btn-sm" onclick="return confirmDelete()">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+    <script>
+        function confirmDelete() {
+            return confirm("Are you sure you want to delete this category?");
+        }
+    </script>
+

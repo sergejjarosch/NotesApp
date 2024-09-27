@@ -15,11 +15,12 @@ namespace NotesApp.Models
 
         public DateTime Date { get; set; } = DateTime.Now;
 
-        [Required]
-        public string Author { get; set; }
+        public string? Author { get; set; }
 
+    
         public int CategoryId { get; set; }
 
+        [Required]
         public Category Category { get; set; }
     }
 

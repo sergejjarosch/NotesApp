@@ -10,23 +10,42 @@
     <input type="hidden" asp-for="Note.Id" />
 
     <div class="mb-3">
-        <label asp-for="Note.Title" class="form-label"></label>
-        <input asp-for="Note.Title" class="form-control" />
-        <span asp-validation-for="Note.Title" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Note.Content" class="form-label"></label>
-        <textarea asp-for="Note.Content" class="form-control"></textarea>
-        <span asp-validation-for="Note.Content" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
         <label asp-for="Note.CategoryId" class="form-label">Category</label>
         <select asp-for="Note.CategoryId" class="form-control" asp-items="Model.Categories"></select>
         <span asp-validation-for="Note.CategoryId" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Save</button>
+    <div class="mb-3">
+        <label asp-for="Note.Title" class="form-label"></label>
+        <input asp-for="Note.Title" class="form-control" />
+        <span asp-validation-for="Note.Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3 note-text-field">
+        <label asp-for="Note.Content" class="form-label"></label>
+
+        <!-- Verstecktes Input-Feld zum Speichern des Quill-Inhalts -->
+        <input type="hidden" asp-for="Note.Content" />
+
+        <!-- Quill Editor-Container -->
+        <div class="quill-editor" style="height: 30vh;"></div>
+
+        <span asp-validation-for="Note.Content" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3 d-flex justify-content-between">
+        <div>
+            <button type="submit" class="btn btn-primary me-2">Save</button>
+            <a asp-action="Index" class="btn btn-primary">Back to List</a>
+        </div>
+        <a asp-action="Delete" asp-route-id="@Model.Note.Id" class="btn btn-danger" onclick="return confirmDelete()">Delete</a>
+    </div>
+
+
 </form>
 
+<script>
+    function confirmDelete() {
+        return confirm("Are you sure you want to delete this category?");
+    }
+</script>

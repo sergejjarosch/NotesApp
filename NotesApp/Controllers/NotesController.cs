@@ -29,22 +29,11 @@ namespace NotesApp.Controllers
             return View(notes);
         }
 
-        // Details: Details einer Notiz anzeigen
-        public async Task<IActionResult> Details(int id)
-        {
-            var note = await _context.Notes.Include(n => n.Category)
-                                            .FirstOrDefaultAsync(n => n.Id == id);
-            if (note == null)
-            {
-                return NotFound();
-            }
-            return View(note);
-        }
 
         // Create: Neue Notiz erstellen (GET)
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
-            var categories = await _context.Categories.ToListAsync();
+            var categories = _context.Categories.ToList();
             var viewModel = new NoteViewModel
             {
                 Note = new Note(),
@@ -55,28 +44,34 @@ namespace NotesApp.Controllers
 
         // Create: Neue Notiz speichern (POST)
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(NoteViewModel viewModel)
+        public IActionResult Create(NoteViewModel viewModel)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(viewModel.Note);
-                await _context.SaveChangesAsync();
+
+            var selectedCategory = _context.Categories.FirstOrDefault(c => c.Id == viewModel.Note.CategoryId);
+            var maxId = _context.Notes.Max(n => n.Id);
+
+
+                var newNote = new Note
+                {
+                    Title = viewModel.Note.Title,
+                    Content = viewModel.Note.Content,
+                    Date = viewModel.Note.Date.ToUniversalTime(),
+                    CategoryId = viewModel.Note.CategoryId,
+                    Id = maxId + 1,
+                    //Author = User.Identity.Name
+                    Author = "Default Author"
+                };
+                _context.Notes.Add(newNote);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
-            }
-            viewModel.Categories = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
-            return View(viewModel);
         }
 
         // Edit: Bearbeiten einer Notiz (GET)
-        public async Task<IActionResult> Edit(int id)
+        public IActionResult Edit(int id)
         {
-            var note = await _context.Notes.FindAsync(id);
-            if (note == null)
-            {
-                return NotFound();
-            }
-            var categories = await _context.Categories.ToListAsync();
+            var note = _context.Notes.Find(id);
+
+            var categories = _context.Categories.ToList();
             var viewModel = new NoteViewModel
             {
                 Note = note,
@@ -85,56 +80,32 @@ namespace NotesApp.Controllers
             return View(viewModel);
         }
 
+
         // Edit: Änderungen speichern (POST)
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, NoteViewModel viewModel)
+        public IActionResult Edit(int id, NoteViewModel viewModel)
         {
-            if (id != viewModel.Note.Id)
-            {
-                return NotFound();
-            }
+            // Überprüfen, ob die Notiz mit der übergebenen Id existiert
+            var existingNote = _context.Notes.Find(id);
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(viewModel.Note);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!NoteExists(viewModel.Note.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                // Aktualisiere die Werte der existierenden Notiz
+                existingNote.Title = viewModel.Note.Title;
+                existingNote.Content = viewModel.Note.Content;
+                existingNote.Date = viewModel.Note.Date.ToUniversalTime();
+                existingNote.CategoryId = viewModel.Note.CategoryId;
+                // existingNote.Author könnte ebenfalls aktualisiert werden, wenn erforderlich
+
+                // Speichere die Änderungen in der Datenbank
+                _context.Notes.Update(existingNote);
+                _context.SaveChanges();
+
                 return RedirectToAction(nameof(Index));
-            }
-            viewModel.Categories = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
-            return View(viewModel);
         }
+
 
         // Delete: Notiz löschen (GET)
         public async Task<IActionResult> Delete(int id)
-        {
-            var note = await _context.Notes.Include(n => n.Category)
-                                            .FirstOrDefaultAsync(n => n.Id == id);
-            if (note == null)
-            {
-                return NotFound();
-            }
-            return View(note);
-        }
-
-        // Delete: Notiz löschen (POST)
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var note = await _context.Notes.FindAsync(id);
             if (note != null)
@@ -143,11 +114,6 @@ namespace NotesApp.Controllers
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool NoteExists(int id)
-        {
-            return _context.Notes.Any(e => e.Id == id);
         }
     }
 }

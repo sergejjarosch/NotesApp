@@ -1,4 +1,6 @@
-﻿@model NotesApp.ViewModels.NoteViewModel
+﻿
+
+@model NotesApp.ViewModels.NoteViewModel
 
 @{
     ViewData["Title"] = "Create Note";
@@ -15,9 +17,15 @@
         <span asp-validation-for="Note.Title" class="text-danger"></span>
     </div>
 
-    <div class="mb-3">
+    <div class="mb-3 note-text-field">
         <label asp-for="Note.Content" class="form-label"></label>
-        <textarea asp-for="Note.Content" class="form-control"></textarea>
+
+        <!-- Verstecktes Input-Feld zum Speichern des Quill-Inhalts -->
+        <input type="hidden" asp-for="Note.Content" />
+
+        <!-- Quill Editor-Container -->
+        <div class="quill-editor" style="height: 30vh;"></div>
+
         <span asp-validation-for="Note.Content" class="text-danger"></span>
     </div>
 
