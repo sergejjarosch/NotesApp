@@ -4,25 +4,25 @@
     ViewData["Title"] = "Edit Note";
 }
 
-<h2>Edit Note</h2>
+<h2>@NotesApp.Resources.Resource.Edit_Note</h2>
 
 <form asp-controller="Notes" asp-action="Edit" method="post">
     <input type="hidden" asp-for="Note.Id" />
 
     <div class="mb-3">
-        <label asp-for="Note.CategoryId" class="form-label">Category</label>
+        <label class="form-label">@NotesApp.Resources.Resource.Category</label>
         <select asp-for="Note.CategoryId" class="form-control" asp-items="Model.Categories"></select>
         <span asp-validation-for="Note.CategoryId" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Note.Title" class="form-label"></label>
+        <label class="form-label">@NotesApp.Resources.Resource.Title</label>
         <input asp-for="Note.Title" class="form-control" />
         <span asp-validation-for="Note.Title" class="text-danger"></span>
     </div>
 
     <div class="mb-3 note-text-field">
-        <label asp-for="Note.Content" class="form-label"></label>
+        <label class="form-label">@NotesApp.Resources.Resource.Content</label>
 
         <!-- Verstecktes Input-Feld zum Speichern des Quill-Inhalts -->
         <input type="hidden" asp-for="Note.Content" />
@@ -35,10 +35,10 @@
 
     <div class="mb-3 d-flex justify-content-between">
         <div>
-            <button type="submit" class="btn btn-primary me-2">Save</button>
-            <a asp-action="Index" class="btn btn-primary">Back to List</a>
+            <button type="submit" class="btn btn-primary me-2">@NotesApp.Resources.Resource.Save</button>
+            <a asp-action="Index" class="btn btn-primary">@NotesApp.Resources.Resource.Back_to_List</a>
         </div>
-        <a asp-action="Delete" asp-route-id="@Model.Note.Id" class="btn btn-danger" onclick="return confirmDelete()">Delete</a>
+        <a asp-action="Delete" asp-route-id="@Model.Note.Id" class="btn btn-danger" onclick="return confirmDelete()">@NotesApp.Resources.Resource.Delete</a>
     </div>
 
 

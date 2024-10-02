@@ -12,16 +12,37 @@
         <nav class="navbar navbar-expand-sm navbar-light bg-light">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Notes" asp-action="Index">NotesApp</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Notes" asp-action="Index">Notes</a>
+                            <a class="nav-link" asp-controller="Notes" asp-action="Index">@NotesApp.Resources.Resource.Notes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Categories" asp-action="Index">Categories</a>
+                            <a class="nav-link" asp-controller="Categories" asp-action="Index">@NotesApp.Resources.Resource.Categories</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <ul class="navbar-nav text-end">
+                        <li class="nav-item dropdown">
+                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @if(Thread.CurrentThread.CurrentCulture.ToString() == "en")
+                                {
+                                    <span>English</span>
+                                }
+                                else
+                                {
+                                <span>Deutsch</span>
+                                }
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <li><a class="dropdown-item" asp-controller="Notes" asp-action="ChangeLanguage" asp-route-language="en">English</a></li>
+                                <li><a class="dropdown-item" asp-controller="Notes" asp-action="ChangeLanguage" asp-route-language="de">Deutsch</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>

@@ -4,7 +4,7 @@
     ViewData["Title"] = "Edit Category";
 }
 
-<h2>Edit Category</h2>
+<h2>@NotesApp.Resources.Resource.Edit_Category</h2>
 
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="Id" /> <!-- Make sure this hidden field is present -->
@@ -18,10 +18,10 @@
 
     <div class="mb-3 d-flex justify-content-between">
         <div>
-            <button type="submit" class="btn btn-primary me-2">Save</button>
-            <a asp-action="Index" class="btn btn-primary">Back to List</a>
+            <button type="submit" class="btn btn-primary me-2">@NotesApp.Resources.Resource.Save</button>
+            <a asp-action="Index" class="btn btn-primary">@NotesApp.Resources.Resource.Back_to_List</a>
         </div>
-        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger" onclick="return confirmDelete()">Delete</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger" onclick="return confirmDelete()">@NotesApp.Resources.Resource.Delete</a>
     </div>
 
 </form>

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using NotesApp.Data;
 using NotesApp.Models;
 using NotesApp.ViewModels;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace NotesApp.Controllers
@@ -46,11 +47,14 @@ namespace NotesApp.Controllers
         [HttpPost]
         public IActionResult Create(NoteViewModel viewModel)
         {
-
+           
             var selectedCategory = _context.Categories.FirstOrDefault(c => c.Id == viewModel.Note.CategoryId);
             var maxId = _context.Notes.Max(n => n.Id);
 
-
+            if (selectedCategory != null
+                && !string.IsNullOrWhiteSpace(viewModel.Note.Title)
+                && !string.IsNullOrWhiteSpace(viewModel.Note.Content))
+            { 
                 var newNote = new Note
                 {
                     Title = viewModel.Note.Title,
@@ -64,6 +68,9 @@ namespace NotesApp.Controllers
                 _context.Notes.Add(newNote);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
+            }
+            viewModel.Categories = new SelectList(_context.Categories, "Id", "Name");
+            return View(viewModel);
         }
 
         // Edit: Bearbeiten einer Notiz (GET)
@@ -88,6 +95,10 @@ namespace NotesApp.Controllers
             // Überprüfen, ob die Notiz mit der übergebenen Id existiert
             var existingNote = _context.Notes.Find(id);
 
+            if (existingNote != null
+                && !string.IsNullOrWhiteSpace(viewModel.Note.Title)
+                && !string.IsNullOrWhiteSpace(viewModel.Note.Content))
+            {
 
                 // Aktualisiere die Werte der existierenden Notiz
                 existingNote.Title = viewModel.Note.Title;
@@ -101,6 +112,9 @@ namespace NotesApp.Controllers
                 _context.SaveChanges();
 
                 return RedirectToAction(nameof(Index));
+            }
+            viewModel.Categories = new SelectList(_context.Categories, "Id", "Name");
+            return View(viewModel);
         }
 
 
@@ -115,5 +129,24 @@ namespace NotesApp.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+        // Change Language
+        public IActionResult ChangeLanguage(string language)
+        {
+            if (!string.IsNullOrEmpty(language))
+            {
+                Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(language);
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo(language);
+            }
+            else
+            {
+                Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en");
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
+                language = "en";
+            }
+            Response.Cookies.Append("Language", language);
+            return Redirect(Request.GetTypedHeaders().Referer.ToString());
+        }
+
     }
 }

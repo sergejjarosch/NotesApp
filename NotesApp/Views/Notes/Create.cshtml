@@ -1,24 +1,20 @@
-﻿
-
-@model NotesApp.ViewModels.NoteViewModel
+﻿@model NotesApp.ViewModels.NoteViewModel
 
 @{
     ViewData["Title"] = "Create Note";
 }
 
-<h2>Create Note</h2>
-
-
+<h2 class="">@NotesApp.Resources.Resource.Create_Note</h2>
 
 <form asp-action="Create" method="post">
     <div class="mb-3">
-        <label asp-for="Note.Title" class="form-label"></label>
+        <label class="form-label">@NotesApp.Resources.Resource.Title</label>
         <input asp-for="Note.Title" class="form-control" />
         <span asp-validation-for="Note.Title" class="text-danger"></span>
     </div>
 
     <div class="mb-3 note-text-field">
-        <label asp-for="Note.Content" class="form-label"></label>
+        <label class="form-label">@NotesApp.Resources.Resource.Content</label>
 
         <!-- Verstecktes Input-Feld zum Speichern des Quill-Inhalts -->
         <input type="hidden" asp-for="Note.Content" />
@@ -30,11 +26,11 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="Note.CategoryId" class="form-label">Category</label>
+        <label class="form-label">@NotesApp.Resources.Resource.Category</label>
         <select asp-for="Note.CategoryId" class="form-control" asp-items="Model.Categories"></select>
         <span asp-validation-for="Note.CategoryId" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="submit" class="btn btn-primary">@NotesApp.Resources.Resource.Create</button>
 </form>
 

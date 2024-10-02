@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NotesApp.Data;
 using NotesApp.Models;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -35,11 +36,15 @@ namespace NotesApp.Controllers
         [HttpPost]
         public IActionResult Create(Category category)
         {
-            var maxId = _context.Categories.Max(x => x.Id);
-            category.Id = maxId + 1;
-            _context.Add(category);
-            _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if (category.Name != null)
+            {
+                var maxId = _context.Categories.Max(x => x.Id);
+                category.Id = maxId + 1;
+                _context.Add(category);
+                _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(nameof(Create));
         }
 
         // GetCategory By ID 
@@ -76,7 +81,7 @@ namespace NotesApp.Controllers
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View(nameof(Create));
         }
 
         // Delete: Kategorie löschen (GET)
@@ -90,5 +95,8 @@ namespace NotesApp.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+        
+
     }
 }

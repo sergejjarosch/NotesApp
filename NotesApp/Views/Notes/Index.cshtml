@@ -14,16 +14,16 @@
 
 <h2>All Notes</h2>
 
-<a asp-action="Create" class="btn btn-primary">Create New Note</a>
+<a asp-action="Create" class="btn btn-primary">@NotesApp.Resources.Resource.Create_New_Note</a>
 
 <table class="table table-striped mt-3">
     <thead>
         <tr>
-            <th>Title</th>
-            <th>Date</th>
-            <th>Category</th>
-            <th>Preview</th>
-            <th class="text-end" >Actions</th>
+            <th>@NotesApp.Resources.Resource.Title</th>
+            <th>@NotesApp.Resources.Resource.Date</th>
+            <th>@NotesApp.Resources.Resource.Category</th>
+            <th>@NotesApp.Resources.Resource.Preview</th>
+            <th class="text-end">@NotesApp.Resources.Resource.Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -49,17 +49,17 @@
                     }
                 </td>
                 <td class="text-end">
-                    <a asp-action="Edit" asp-route-id="@note.Id" class="btn btn-warning btn-sm">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@note.Id" class="btn btn-danger btn-sm" onclick="return confirmDelete()">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@note.Id" class="btn btn-warning btn-sm">@NotesApp.Resources.Resource.Edit</a>
+                    <a asp-action="Delete" asp-route-id="@note.Id" class="btn btn-danger btn-sm" onclick="return confirmDelete()">@NotesApp.Resources.Resource.Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-    <script>
-        function confirmDelete() {
-            return confirm("Are you sure you want to delete this category?");
-        }
-    </script>
+<script>
+    function confirmDelete() {
+        return confirm("@Html.Raw(NotesApp.Resources.Resource.Are_you_sure_you_want_to_delete_this_category_)");
+    }
+</script>
 
